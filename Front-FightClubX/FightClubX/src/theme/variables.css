@@ -1,0 +1,101 @@
+/* FightClubX Minimalist Theme - Senior UX/UI Polish */
+
+:root {
+  --ion-color-primary: #d91b5c;
+  --ion-color-primary-rgb: 217, 27, 92;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #bf1851;
+  --ion-color-primary-tint: #dd326c;
+
+  --ion-background-color: #000000;
+  --ion-background-color-rgb: 0, 0, 0;
+
+  --ion-text-color: #ffffff;
+  --ion-text-color-rgb: 255, 255, 255;
+
+  --ion-item-background: #000000;
+  --ion-card-background: #000000;
+  
+  --fcx-border-color: #1A1A1A;
+  --fcx-text-muted: #A0A0A0;
+}
+
+body {
+  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
+  background-color: #000000;
+}
+
+/* Minimalist Card & Item styling */
+ion-card {
+  background: #000000 !important;
+  border: 1px solid var(--fcx-border-color) !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  margin: 16px !important;
+}
+
+ion-item {
+  --border-color: var(--fcx-border-color);
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+ion-button {
+  --border-radius: 10px !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: none;
+}
+
+/* Floating Tab Bar Minimalist */
+ion-tab-bar {
+  --background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--fcx-border-color);
+  border-radius: 30px;
+  margin: 0 20px 20px 20px;
+  height: 65px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: none;
+}
+
+ion-tab-button {
+  --color: var(--fcx-text-muted);
+  --color-selected: var(--ion-color-primary);
+}
+
+/* Header Minimalist */
+ion-toolbar {
+  --background: #000000;
+  --border-color: transparent;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+}
+
+ion-title {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+}
+
+/* Custom Icon Styling */
+.fcx-page-icon {
+  width: 48px;
+  height: 48px;
+  margin: 20px auto;
+  display: block;
+  object-fit: contain;
+}
+
+.fcx-button-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  object-fit: contain;
+}

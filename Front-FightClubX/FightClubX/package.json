@@ -1,0 +1,40 @@
+{
+  "name": "fightclubx",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@ionic/react": "^8.0.0",
+    "@ionic/react-router": "^8.0.0",
+    "ionicons": "^7.0.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router": "^5.3.4",
+    "react-router-dom": "^5.3.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-router": "^5.1.20",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "typescript": "^5.7.3",
+    "vite": "^8.0.12"
+  }
+}

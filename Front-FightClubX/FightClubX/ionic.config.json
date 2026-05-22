@@ -1,0 +1,7 @@
+{
+  "name": "FightClubX",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,0 +1,9 @@
+/* Minimal index.css for Ionic */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  height: 100%;
+}
