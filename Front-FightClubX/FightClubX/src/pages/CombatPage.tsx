@@ -6,8 +6,6 @@ import {
   IonTitle,
   IonToolbar,
   IonButton,
-  IonCard,
-  IonCardContent,
   IonText,
   IonButtons,
   IonBackButton,
@@ -20,11 +18,13 @@ import {
   IonImg
 } from '@ionic/react';
 import { play, pause, refresh, settingsOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';
 
 // Import icons
 import CombatIcon from '../images/CombatIcon.png';
 
 const CombatPage: React.FC = () => {
+  const history = useHistory();
   // Config state
   const [roundTime, setRoundTime] = useState(180);
   const [restTime, setRestTime] = useState(60);
@@ -70,6 +70,7 @@ const CombatPage: React.FC = () => {
     setIsResting(false);
     setRound(1);
     setSeconds(roundTime);
+    history.push('/tabs/main');
   };
 
   if (!isStarted) {
