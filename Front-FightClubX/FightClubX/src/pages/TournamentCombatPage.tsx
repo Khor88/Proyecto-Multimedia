@@ -17,7 +17,7 @@ import {
   IonCardContent,
   IonModal
 } from '@ionic/react';
-import { play, pause, refresh, trophy } from 'ionicons/icons';
+import { play, pause, refresh, trophy, chevronBack } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router-dom';
 
 interface LocationState {
@@ -29,6 +29,7 @@ interface LocationState {
   };
   fighter1: { name: string; index: number };
   fighter2: { name: string; index: number };
+  isFinal?: boolean;
   savedState?: any;
 }
 
@@ -41,16 +42,18 @@ const TournamentCombatPage: React.FC = () => {
   const config = state.config || { name: 'Torneo', rounds: 3, roundTime: 3, restTime: 1 };
   const fighter1 = state.fighter1 || { name: 'Luchador 1', index: 0 };
   const fighter2 = state.fighter2 || { name: 'Luchador 2', index: 1 };
+  const isFinal = state.isFinal || false;
   const savedState = state.savedState || null;
 
-  const roundTimeSec = (config.roundTime || 3) * 60;
-  const restTimeSec = (config.restTime || 1) * 60;
-
-  const [seconds, setSeconds] = useState(roundTimeSec);
+  const [seconds, setSeconds] = useState((config.roundTime || 3) * 60);
   const [isActive, setIsActive] = useState(false);
   const [isResting, setIsResting] = useState(false);
   const [round, setRound] = useState(1);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
+
+  const roundTimeSec = (config.roundTime || 3) * 60;
+  const restTimeSec = (config.restTime || 1) * 60;
+  const totalRounds = config.rounds || 3;
 
   useEffect(() => {
     let interval: any = null;
@@ -58,7 +61,7 @@ const TournamentCombatPage: React.FC = () => {
       interval = setInterval(() => setSeconds(s => s - 1), 1000);
     } else if (seconds === 0 && isActive) {
       if (!isResting) {
-        if (round >= config.rounds) {
+        if (round >= totalRounds) {
           setIsActive(false);
           setShowWinnerModal(true);
         } else {
@@ -72,7 +75,12 @@ const TournamentCombatPage: React.FC = () => {
       }
     }
     return () => clearInterval(interval);
-  }, [isActive, seconds, isResting, round, config.rounds, roundTimeSec, restTimeSec]);
+  }, [isActive, seconds, isResting, round, totalRounds, roundTimeSec, restTimeSec]);
+
+  // Ensure seconds are updated if config changes (though it shouldn't mid-combat)
+  useEffect(() => {
+    setSeconds(roundTimeSec);
+  }, [roundTimeSec]);
 
   const formatTime = (secs: number) => {
     const mins = Math.floor(secs / 60);
@@ -81,15 +89,22 @@ const TournamentCombatPage: React.FC = () => {
   };
 
   const selectWinner = (winnerIndex: number) => {
+    setIsActive(false); // STOP THE TIMER
     setShowWinnerModal(false);
     history.push({
       pathname: '/tournament',
       state: { 
         winnerIndex, 
         matchFinished: true,
+        isFinal,
         savedState
       }
     });
+  };
+
+  const handleBack = () => {
+    setIsActive(false); // STOP THE TIMER
+    history.push('/tournament');
   };
 
   return (
@@ -97,7 +112,9 @@ const TournamentCombatPage: React.FC = () => {
       <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/tournament" />
+            <IonButton onClick={handleBack}>
+              <IonIcon icon={chevronBack} slot="icon-only" color="primary" />
+            </IonButton>
           </IonButtons>
           <IonTitle>Combate de Torneo</IonTitle>
         </IonToolbar>

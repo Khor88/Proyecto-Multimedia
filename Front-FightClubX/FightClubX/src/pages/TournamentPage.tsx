@@ -56,12 +56,24 @@ const TournamentPage: React.FC = () => {
   useEffect(() => {
     if (location.state?.savedState) {
       const { isStarted, tournamentConfig, fighters, currentRoundWinners } = location.state.savedState;
+      
+      // If we are returning from a finished FINAL match, show victory screen immediately
+      if (location.state.matchFinished && location.state.isFinal && location.state.winnerIndex !== undefined) {
+        const updatedFighters = [...fighters];
+        const winner = updatedFighters[location.state.winnerIndex];
+        setIsStarted(true);
+        setTournamentConfig(tournamentConfig);
+        setFighters([{ ...winner, winner: true }]); // Show only the winner to trigger victory view
+        setCurrentRoundWinners([]);
+        return;
+      }
+
       setIsStarted(isStarted);
       setTournamentConfig(tournamentConfig);
       setFighters(fighters);
       setCurrentRoundWinners(currentRoundWinners);
 
-      // If we are returning from a finished match, update the winner
+      // If we are returning from a regular finished match, update the winner
       if (location.state.matchFinished && location.state.winnerIndex !== undefined) {
         // We use the restored fighters list to apply the winner
         const updatedFighters = [...fighters];
@@ -100,6 +112,7 @@ const TournamentPage: React.FC = () => {
         config: tournamentConfig,
         fighter1: { name: fighters[idx1].name, index: idx1 },
         fighter2: { name: fighters[idx2].name, index: idx2 },
+        isFinal: fighters.length === 2, // It's final if there are only 2 fighters left in this round
         savedState: {
           isStarted,
           tournamentConfig,
@@ -115,6 +128,15 @@ const TournamentPage: React.FC = () => {
     setCurrentRoundWinners([]);
   };
 
+  const resetTournament = () => {
+    setIsStarted(false);
+    setTournamentConfig({ name: '', rounds: 3, roundTime: 3, restTime: 1 });
+    setFighters([]);
+    setNewFighter('');
+    setCurrentRoundWinners([]);
+    history.push('/tabs/main');
+  };
+
   const handleBackWithWarning = () => {
     if (isStarted && fighters.length > 1) {
       presentAlert({
@@ -125,12 +147,12 @@ const TournamentPage: React.FC = () => {
           { 
             text: 'Salir', 
             role: 'destructive',
-            handler: () => history.push('/tabs/main')
+            handler: resetTournament
           }
         ]
       });
     } else {
-      history.push('/tabs/main');
+      resetTournament();
     }
   };
 
@@ -168,12 +190,12 @@ const TournamentPage: React.FC = () => {
             </IonItem>
             <IonGrid className="ion-no-padding" style={{ marginBottom: '16px' }}>
               <IonRow>
-                <IonCol size="6"><IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px' }}><IonInput label="Rounds" type="number" min="1" value={tournamentConfig.rounds} onIonChange={e => setTournamentConfig({...tournamentConfig, rounds: parseInt(e.detail.value!)})} /></IonItem></IonCol>
-                <IonCol size="6"><IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px' }}><IonInput label="Min/Round" type="number" min="1" value={tournamentConfig.roundTime} onIonChange={e => setTournamentConfig({...tournamentConfig, roundTime: parseInt(e.detail.value!)})} /></IonItem></IonCol>
+                <IonCol size="6"><IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px' }}><IonInput label="Rounds" type="number" min="1" value={tournamentConfig.rounds} onIonChange={e => setTournamentConfig({...tournamentConfig, rounds: parseInt(e.detail.value! || '1')})} /></IonItem></IonCol>
+                <IonCol size="6"><IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px' }}><IonInput label="Min/Round" type="number" min="1" value={tournamentConfig.roundTime} onIonChange={e => setTournamentConfig({...tournamentConfig, roundTime: parseInt(e.detail.value! || '3')})} /></IonItem></IonCol>
               </IonRow>
             </IonGrid>
             <IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px', marginBottom: '16px' }}>
-              <IonInput label="Descanso (min)" type="number" min="1" value={tournamentConfig.restTime} onIonChange={e => setTournamentConfig({...tournamentConfig, restTime: parseInt(e.detail.value!)})} />
+              <IonInput label="Descanso (min)" type="number" min="1" value={tournamentConfig.restTime} onIonChange={e => setTournamentConfig({...tournamentConfig, restTime: parseInt(e.detail.value! || '1')})} />
             </IonItem>
             <IonItem lines="none" style={{ '--background': '#0D0D0D', borderRadius: '12px', marginBottom: '16px' }}>
               <IonInput 
@@ -199,49 +221,50 @@ const TournamentPage: React.FC = () => {
           <div className="ion-padding ion-text-center">
             {fighters.length === 1 ? (
                 <div style={{ 
-                    marginTop: '50px', 
+                    marginTop: '20px', 
                     animation: 'fadeIn 1s ease-in',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: '60vh'
+                    height: '75vh'
                 }}>
                     <div style={{ position: 'relative', marginBottom: '30px' }}>
-                        <IonImg src={TournamentIcon} style={{ width: '180px', height: '180px', filter: 'drop-shadow(0 0 20px rgba(255, 61, 113, 0.4))' }} />
+                        <IonImg src={TournamentIcon} style={{ width: '220px', height: '220px', filter: 'drop-shadow(0 0 30px rgba(255, 61, 113, 0.6))' }} />
                         <IonIcon icon={trophyOutline} color="warning" style={{ 
-                            fontSize: '60px', 
+                            fontSize: '80px', 
                             position: 'absolute', 
-                            bottom: '-10px', 
-                            right: '-10px',
+                            bottom: '-15px', 
+                            right: '-15px',
                             background: '#000',
                             borderRadius: '50%',
-                            padding: '10px',
-                            border: '2px solid var(--ion-color-warning)'
+                            padding: '15px',
+                            border: '3px solid var(--ion-color-warning)',
+                            boxShadow: '0 0 20px rgba(255, 196, 9, 0.4)'
                         }} />
                     </div>
                     
-                    <IonText color="primary"><h1 style={{ fontSize: '42px', fontWeight: '900', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '0' }}>¡CAMPEÓN!</h1></IonText>
+                    <IonText color="primary"><h1 style={{ fontSize: '48px', fontWeight: '900', letterSpacing: '6px', textTransform: 'uppercase', marginBottom: '10px', textShadow: '0 0 10px rgba(255, 61, 113, 0.5)' }}>¡CAMPEÓN!</h1></IonText>
                     
-                    <IonCard style={{ 
+                    <div style={{ 
                         border: '2px solid var(--ion-color-primary)', 
                         background: 'rgba(255, 61, 113, 0.1)', 
                         borderRadius: '25px',
                         width: '100%',
-                        marginTop: '20px'
+                        padding: '30px 20px',
+                        marginTop: '20px',
+                        boxShadow: 'inset 0 0 20px rgba(255, 61, 113, 0.2)'
                     }}>
-                        <IonCardContent className="ion-text-center">
-                            <IonText style={{ fontSize: '32px', fontWeight: 'bold', color: '#fff', textTransform: 'uppercase' }}>
-                                {fighters[0].name}
-                            </IonText>
-                        </IonCardContent>
-                    </IonCard>
+                        <IonText style={{ fontSize: '40px', fontWeight: 'bold', color: '#fff', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                            {fighters[0].name}
+                        </IonText>
+                    </div>
                     
                     <IonButton 
                         expand="block" 
                         color="primary" 
-                        onClick={() => history.push('/tabs/main')} 
-                        style={{ height: '55px', width: '100%', marginTop: '40px', fontWeight: 'bold' }}
+                        onClick={resetTournament} 
+                        style={{ height: '60px', width: '100%', marginTop: '50px', fontWeight: 'bold', fontSize: '18px', '--border-radius': '15px' }}
                     >
                         FINALIZAR TORNEO
                     </IonButton>

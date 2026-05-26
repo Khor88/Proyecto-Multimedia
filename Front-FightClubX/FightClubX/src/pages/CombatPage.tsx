@@ -17,7 +17,7 @@ import {
   IonInput,
   IonImg
 } from '@ionic/react';
-import { play, pause, refresh, settingsOutline } from 'ionicons/icons';
+import { play, pause, refresh, settingsOutline, chevronBack } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 
 // Import icons
@@ -61,7 +61,16 @@ const CombatPage: React.FC = () => {
 
   const startCombat = () => {
     setSeconds(roundTime);
+    setIsActive(false); // Ensure it's not active before starting
     setIsStarted(true);
+  };
+
+  const resetCombat = () => {
+    setIsActive(false);
+    setIsStarted(false);
+    setIsResting(false);
+    setRound(1);
+    setSeconds(roundTime);
   };
 
   const finishCombat = () => {
@@ -115,11 +124,13 @@ const CombatPage: React.FC = () => {
       <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={finishCombat}><IonBackButton defaultHref="/combat" /></IonButton>
+            <IonButton onClick={resetCombat}>
+              <IonIcon icon={chevronBack} color="primary" slot="icon-only" />
+            </IonButton>
           </IonButtons>
           <IonTitle>Combate Rápido</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={finishCombat}>
+            <IonButton onClick={resetCombat}>
               <IonIcon icon={settingsOutline} color="primary" style={{ fontSize: '24px' }} />
             </IonButton>
           </IonButtons>
