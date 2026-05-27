@@ -54,6 +54,8 @@ import TournamentPage from './pages/TournamentPage';
 import TournamentCombatPage from './pages/TournamentCombatPage';
 import LeaguePage from './pages/LeaguePage';
 import LeagueDetailPage from './pages/LeagueDetailPage';
+import LeagueCreatePage from './pages/LeagueCreatePage';
+import LeagueConfigPage from './pages/LeagueConfigPage';
 
 setupIonicReact();
 
@@ -92,9 +94,11 @@ const App: React.FC = () => (
         <Route exact path="/combat" component={CombatPage} />
         <Route exact path="/tournament" component={TournamentPage} />
         <Route exact path="/tournament-combat" component={TournamentCombatPage} />
+        <Route exact path="/league/create" component={LeagueCreatePage} />
+        <Route exact path="/league/:id(\d+)/config" component={LeagueConfigPage} />
+        <Route exact path="/league/:id(\d+)/ranking" component={RankingPage} />
+        <Route exact path="/league/:id(\d+)" component={LeagueDetailPage} />
         <Route exact path="/league" component={LeaguePage} />
-        <Route exact path="/league/:id" component={LeagueDetailPage} />
-        <Route exact path="/league/:id/ranking" component={RankingPage} />
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>

@@ -17,7 +17,7 @@ export interface League {
   image: string;
 }
 
-export const dummyLeagues: League[] = [
+export let dummyLeagues: League[] = [
   { 
     id: 1, 
     name: 'LIGA PRO-FIGHT', 
@@ -43,6 +43,10 @@ export const dummyLeagues: League[] = [
     image: LeagueIcon 
   },
 ];
+
+export const addDummyLeague = (league: League) => {
+  dummyLeagues = [...dummyLeagues, league];
+};
 
 export const dummyMembers: Member[] = [
   { id: 1, name: 'Pablo Méndez', role: 'Presidente', image: personOutline },

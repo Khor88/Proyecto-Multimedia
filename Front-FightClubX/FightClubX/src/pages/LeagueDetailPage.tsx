@@ -43,6 +43,10 @@ const LeagueDetailPage: React.FC = () => {
     history.push(`/league/${id}/ranking`);
   };
 
+  const goToConfig = () => {
+    history.push(`/league/${id}/config`);
+  };
+
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
@@ -52,7 +56,7 @@ const LeagueDetailPage: React.FC = () => {
           </IonButtons>
           <IonTitle style={{ fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Detalle Liga</IonTitle>
           <IonButtons slot="end">
-            <IonButton>
+            <IonButton routerLink={`/league/${id}/config`}>
               <IonIcon icon={settingsOutline} color="primary" />
             </IonButton>
           </IonButtons>
@@ -153,7 +157,7 @@ const LeagueDetailPage: React.FC = () => {
             <IonIcon icon={statsChartOutline} slot="start" />
             Ver Clasificación
           </IonButton>
-          <IonButton expand="block" fill="outline" color="primary" style={{ '--border-radius': '15px', height: '50px', fontWeight: 'bold' }}>
+          <IonButton expand="block" fill="outline" color="primary" routerLink={`/league/${id}/config`} style={{ '--border-radius': '15px', height: '50px', fontWeight: 'bold' }}>
             Gestionar Liga
           </IonButton>
         </div>

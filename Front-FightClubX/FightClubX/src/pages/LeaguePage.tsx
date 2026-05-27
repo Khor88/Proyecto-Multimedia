@@ -14,7 +14,8 @@ import {
   IonIcon,
   IonButton,
   IonImg,
-  IonAvatar
+  IonAvatar,
+  useIonViewWillEnter
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { addOutline, chevronForwardOutline } from 'ionicons/icons';
@@ -22,6 +23,11 @@ import { dummyLeagues } from '../data/leagueData';
 
 const LeaguePage: React.FC = () => {
   const history = useHistory();
+  const [leagues, setLeagues] = React.useState(dummyLeagues);
+
+  useIonViewWillEnter(() => {
+    setLeagues([...dummyLeagues]);
+  });
 
   const handleLeagueClick = (id: number) => {
     history.push(`/league/${id}`);
@@ -36,7 +42,7 @@ const LeaguePage: React.FC = () => {
           </IonButtons>
           <IonTitle style={{ fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Mis Ligas</IonTitle>
           <IonButtons slot="end">
-            <IonButton color="primary">
+            <IonButton color="primary" routerLink="/league/create">
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </IonButtons>
@@ -45,7 +51,7 @@ const LeaguePage: React.FC = () => {
       <IonContent className="ion-padding">
         
         <IonList style={{ background: 'transparent' }}>
-          {dummyLeagues.map(league => (
+          {leagues.map(league => (
             <IonItem 
               key={league.id} 
               button 
