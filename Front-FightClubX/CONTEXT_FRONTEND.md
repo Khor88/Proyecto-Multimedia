@@ -10,24 +10,30 @@
   - `/login`: Pantalla de acceso (sin barra de navegación).
   - `/tabs`: Contenedor de navegación flotante minimalista.
     - `/tabs/main`: Dashboard principal.
-    - `/tabs/calendar`: Próximos eventos.
-    - `/tabs/ranking`: Clasificación global.
+    - `/tabs/calendar`: Próximos eventos (lógica de fecha real).
     - `/tabs/user`: Perfil de usuario.
-- **Páginas Secuendarias:**
-  - `/combat`: Interfaz de arbitraje con cronómetro de rounds y descansos (configurable en minutos).
-  - `/tournament`: Visualización de cuadros de torneo (brackets).
-  - `/league`: Gestión de miembros y reglas de liga.
+- **Páginas Secundarias:**
+  - `/combat`: Interfaz de arbitraje con cronómetro de rounds y descansos.
+  - `/tournament`: Visualización de cuadros de torneo (brackets) y gestión de combates.
+  - `/league`: Listado de ligas del usuario con opción de añadir nueva (+).
+  - `/league/:id`: Detalle dinámico de una liga específica (miembros, estadísticas, gestión).
+  - `/league/:id/ranking`: Clasificación específica de la liga seleccionada.
 
 ## 3. Componentes y Funcionalidades Implementadas
-- **Login:** Formulario minimalista con logo, campos de email/password y botones de acceso/registro.
-- **Dashboard:** Botones grandes con iconos personalizados (`CombatIcon`, `TournamentIcon`, `LeagueIcon`).
+- **Login:** Formulario minimalista con logo de gran tamaño (200px), campos de email/password.
+- **Dashboard:** Tarjetas interactivas con iconos prominentes y diseño minimalista.
 - **Combat Interface:**
   - Cronómetro que alterna entre Round y Descanso.
-  - Configuración de tiempos en minutos mediante un modal.
-  - Función de "Finalizar Combate" que reinicia el estado y los rounds.
-- **Ranking:** Lista dinámica con visualización de victorias, derrotas y puntos.
-- **Brackets:** Diseño visual de semifinales y final.
-- **Navigation:** Barra de pestañas (Tabs) flotante con efecto blur y diseño de gama alta.
+  - Configuración de tiempos y rounds.
+- **Ligas (Refactorizado):**
+  - Pantalla de listado centralizada.
+  - Navegación a detalle dinámico por ID.
+  - Acceso a clasificación desde cada liga.
+- **Calendario (Dinámico):**
+  - Generación automática del grid del mes actual.
+  - Resaltado visual del día actual y eventos próximos.
+- **Ranking:** Lista dinámica adaptada al contexto de cada liga.
+- **Navigation:** Barra de pestañas (Tabs) flotante con efecto blur, sin ranking global.
 
 ## 4. Assets y Recursos
 - Ubicación de imágenes: `src/images/`

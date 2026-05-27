@@ -17,10 +17,28 @@ import {
 import { calendarOutline, locationOutline, trophyOutline, fitnessOutline, ribbonOutline } from 'ionicons/icons';
 
 const CalendarPage: React.FC = () => {
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  // Get the first day of the month (0 = Sunday, 1 = Monday, etc.)
+  let firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  // Adjust to start with Monday (Lunes) as the first column
+  // If firstDay is 0 (Sunday), it should be 6. If it's 1 (Monday), it should be 0.
+  const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
   const events = [
-    { id: 1, title: 'Torneo Amateur Madrid', date: '25 Mayo 2026', type: 'Torneo', icon: trophyOutline, color: 'var(--ion-color-primary)' },
-    { id: 2, title: 'Combate Benéfico', date: '02 Junio 2026', type: 'Combate', icon: fitnessOutline, color: 'var(--ion-color-secondary)' },
-    { id: 3, title: 'Liga Regional S1', date: '15 Junio 2026', type: 'Liga', icon: ribbonOutline, color: 'var(--ion-color-tertiary)' },
+    { id: 1, title: 'Torneo Amateur Madrid', date: '25 ' + monthNames[currentMonth], type: 'Torneo', icon: trophyOutline, color: 'var(--ion-color-primary)' },
+    { id: 2, title: 'Combate Benéfico', date: '02 ' + monthNames[(currentMonth + 1) % 12], type: 'Combate', icon: fitnessOutline, color: 'var(--ion-color-secondary)' },
+    { id: 3, title: 'Liga Regional S1', date: '15 ' + monthNames[(currentMonth + 1) % 12], type: 'Liga', icon: ribbonOutline, color: 'var(--ion-color-tertiary)' },
   ];
 
   const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
@@ -37,12 +55,12 @@ const CalendarPage: React.FC = () => {
         {/* Month Selector Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', marginTop: '10px' }}>
           <IonText color="primary">
-            <h2 style={{ fontWeight: '700', margin: 0, fontSize: '24px' }}>Mayo 2026</h2>
+            <h2 style={{ fontWeight: '700', margin: 0, fontSize: '24px' }}>{monthNames[currentMonth]} {currentYear}</h2>
           </IonText>
           <IonIcon icon={calendarOutline} color="primary" style={{ fontSize: '24px' }} />
         </div>
 
-        {/* Calendar Grid Placeholder */}
+        {/* Calendar Grid */}
         <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '15px', border: '1px solid var(--fcx-border-color)', marginBottom: '30px' }}>
           <IonGrid className="ion-no-padding">
             <IonRow className="ion-text-center">
@@ -51,19 +69,28 @@ const CalendarPage: React.FC = () => {
               ))}
             </IonRow>
             <IonRow className="ion-text-center" style={{ marginTop: '10px' }}>
-              {Array.from({ length: 31 }).map((_, i) => (
-                <IonCol size="1.7" key={i} style={{ padding: '8px 0', position: 'relative' }}>
-                  <IonText style={{ 
-                    color: i + 1 === 25 ? 'var(--ion-color-primary)' : '#fff', 
-                    fontWeight: i + 1 === 25 ? '900' : 'normal',
-                    fontSize: '14px'
-                  }}>
-                    {i + 1}
-                  </IonText>
-                  {i + 1 === 25 && <div style={{ width: '4px', height: '4px', background: 'var(--ion-color-primary)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
-                  {[2, 15].includes(i + 1) && <div style={{ width: '4px', height: '4px', background: 'var(--fcx-text-muted)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
-                </IonCol>
+              {/* Empty spaces for start offset */}
+              {Array.from({ length: startOffset }).map((_, i) => (
+                <IonCol size="1.7" key={`offset-${i}`} />
               ))}
+              {/* Real days of the month */}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1;
+                const isToday = day === currentDay;
+                return (
+                  <IonCol size="1.7" key={day} style={{ padding: '8px 0', position: 'relative' }}>
+                    <IonText style={{ 
+                      color: isToday ? 'var(--ion-color-primary)' : '#fff', 
+                      fontWeight: isToday ? '900' : 'normal',
+                      fontSize: '14px'
+                    }}>
+                      {day}
+                    </IonText>
+                    {isToday && <div style={{ width: '4px', height: '4px', background: 'var(--ion-color-primary)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
+                    {day === 25 && !isToday && <div style={{ width: '4px', height: '4px', background: 'rgba(255, 61, 113, 0.5)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
+                  </IonCol>
+                );
+              })}
             </IonRow>
           </IonGrid>
         </div>

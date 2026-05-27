@@ -41,6 +41,9 @@ El sistema debe implementar y gestionar las siguientes entidades en MariaDB:
 - **UI/UX:** Dark Mode, color principal Magenta/Rosa (basado en logo).
 - **Dashboard:** Accesos rápidos a "Combate Rápido", "Torneos" y "Ligas".
 - **Sistema de Cronómetro:** Interfaz para árbitros con control de tiempo y rounds.
+- **Gestión de Ligas:** Navegación entre listado de competiciones y detalle dinámico de cada liga.
+- **Ranking:** Clasificación integrada dentro del contexto de cada liga, accesible desde el detalle.
+- **Calendario:** Visualización de eventos con lógica de fechas real y resaltado del día actual.
 
 ## 5. Directrices de Desarrollo para Gemini CLI
 1.  **Arquitectura:** Mantener una separación clara entre Capa de Datos (Modelos), Lógica (Servicios) y Controladores.

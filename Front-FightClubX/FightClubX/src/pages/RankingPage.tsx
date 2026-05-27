@@ -13,11 +13,18 @@ import {
   IonIcon,
   IonCard,
   IonCardContent,
-  IonAvatar
+  IonAvatar,
+  IonButtons,
+  IonBackButton
 } from '@ionic/react';
 import { trophyOutline, medalOutline, statsChartOutline, personOutline, chevronUpOutline } from 'ionicons/icons';
+import { useParams } from 'react-router-dom';
+import { dummyLeagues } from '../data/leagueData';
 
 const RankingPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const league = dummyLeagues.find(l => l.id === parseInt(id));
+  
   const ranking = [
     { pos: 1, name: 'Lucas García', wins: 15, losses: 2, points: 450, trend: 'up' },
     { pos: 2, name: 'Pablo Méndez', wins: 12, losses: 4, points: 380, trend: 'up' },
@@ -40,7 +47,12 @@ const RankingPage: React.FC = () => {
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
-          <IonTitle style={{ fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Ranking Global</IonTitle>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={`/league/${id}`} />
+          </IonButtons>
+          <IonTitle style={{ fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>
+            {league ? `Ranking ${league.name}` : 'Ranking Liga'}
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

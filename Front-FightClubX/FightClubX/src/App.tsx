@@ -53,6 +53,7 @@ import CombatPage from './pages/CombatPage';
 import TournamentPage from './pages/TournamentPage';
 import TournamentCombatPage from './pages/TournamentCombatPage';
 import LeaguePage from './pages/LeaguePage';
+import LeagueDetailPage from './pages/LeagueDetailPage';
 
 setupIonicReact();
 
@@ -68,7 +69,6 @@ const App: React.FC = () => (
             <IonRouterOutlet>
               <Route exact path="/tabs/main" component={MainPage} />
               <Route exact path="/tabs/calendar" component={CalendarPage} />
-              <Route exact path="/tabs/ranking" component={RankingPage} />
               <Route exact path="/tabs/user" component={UserPage} />
             </IonRouterOutlet>
 
@@ -80,10 +80,6 @@ const App: React.FC = () => (
               <IonTabButton tab="calendar" href="/tabs/calendar">
                 <IonIcon icon={calendarOutline} />
                 <IonLabel>Eventos</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="ranking" href="/tabs/ranking">
-                <IonIcon icon={trophyOutline} />
-                <IonLabel>Ranking</IonLabel>
               </IonTabButton>
               <IonTabButton tab="user" href="/tabs/user">
                 <IonIcon icon={personOutline} />
@@ -97,6 +93,8 @@ const App: React.FC = () => (
         <Route exact path="/tournament" component={TournamentPage} />
         <Route exact path="/tournament-combat" component={TournamentCombatPage} />
         <Route exact path="/league" component={LeaguePage} />
+        <Route exact path="/league/:id" component={LeagueDetailPage} />
+        <Route exact path="/league/:id/ranking" component={RankingPage} />
         <Route exact path="/">
           <Redirect to="/login" />
         </Route>
