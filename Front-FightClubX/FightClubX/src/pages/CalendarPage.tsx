@@ -14,11 +14,27 @@ import {
   IonCard,
   IonCardContent
 } from '@ionic/react';
-import { calendarOutline, locationOutline, trophyOutline, fitnessOutline, ribbonOutline } from 'ionicons/icons';
+import { calendarOutline, locationOutline, fitnessOutline, ribbonOutline } from 'ionicons/icons';
+import api from '../services/api';
 
 const CalendarPage: React.FC = () => {
+  const [combats, setCombats] = React.useState<any[]>([]);
   const today = new Date();
-  const currentDay = today.getDate();
+  
+  const fetchCombats = async () => {
+    try {
+      const response = await api.get('/combats/calendar');
+      setCombats(response.data);
+    } catch (err) {
+      console.error('Error fetching calendar:', err);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchCombats();
+  }, []);
+
+  const today_day = today.getDate();
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
 
@@ -28,18 +44,8 @@ const CalendarPage: React.FC = () => {
   ];
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  
-  // Get the first day of the month (0 = Sunday, 1 = Monday, etc.)
   let firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  // Adjust to start with Monday (Lunes) as the first column
-  // If firstDay is 0 (Sunday), it should be 6. If it's 1 (Monday), it should be 0.
   const startOffset = firstDay === 0 ? 6 : firstDay - 1;
-
-  const events = [
-    { id: 1, title: 'Torneo Amateur Madrid', date: '25 ' + monthNames[currentMonth], type: 'Torneo', icon: trophyOutline, color: 'var(--ion-color-primary)' },
-    { id: 2, title: 'Combate Benéfico', date: '02 ' + monthNames[(currentMonth + 1) % 12], type: 'Combate', icon: fitnessOutline, color: 'var(--ion-color-secondary)' },
-    { id: 3, title: 'Liga Regional S1', date: '15 ' + monthNames[(currentMonth + 1) % 12], type: 'Liga', icon: ribbonOutline, color: 'var(--ion-color-tertiary)' },
-  ];
 
   const daysOfWeek = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
   
@@ -69,25 +75,24 @@ const CalendarPage: React.FC = () => {
               ))}
             </IonRow>
             <IonRow className="ion-text-center" style={{ marginTop: '10px' }}>
-              {/* Empty spaces for start offset */}
               {Array.from({ length: startOffset }).map((_, i) => (
                 <IonCol size="1.7" key={`offset-${i}`} />
               ))}
-              {/* Real days of the month */}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const day = i + 1;
-                const isToday = day === currentDay;
+                const isToday = day === today_day;
+                const hasEvent = combats.some(c => new Date(c.fecha).getDate() === day && new Date(c.fecha).getMonth() === currentMonth);
                 return (
                   <IonCol size="1.7" key={day} style={{ padding: '8px 0', position: 'relative' }}>
                     <IonText style={{ 
                       color: isToday ? 'var(--ion-color-primary)' : '#fff', 
-                      fontWeight: isToday ? '900' : 'normal',
+                      fontWeight: (isToday || hasEvent) ? '900' : 'normal',
                       fontSize: '14px'
                     }}>
                       {day}
                     </IonText>
                     {isToday && <div style={{ width: '4px', height: '4px', background: 'var(--ion-color-primary)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
-                    {day === 25 && !isToday && <div style={{ width: '4px', height: '4px', background: 'rgba(255, 61, 113, 0.5)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
+                    {hasEvent && !isToday && <div style={{ width: '4px', height: '4px', background: 'rgba(255, 61, 113, 0.5)', borderRadius: '50%', position: 'absolute', bottom: '2px', left: '50%', transform: 'translateX(-50%)' }} />}
                   </IonCol>
                 );
               })}
@@ -100,7 +105,7 @@ const CalendarPage: React.FC = () => {
         </IonText>
 
         <IonList style={{ background: 'transparent' }}>
-          {events.map(event => (
+          {combats.map(event => (
             <IonCard key={event.id} style={{ 
               margin: '0 0 16px 0', 
               borderRadius: '20px', 
@@ -114,26 +119,26 @@ const CalendarPage: React.FC = () => {
                     width: '50px', 
                     height: '50px', 
                     borderRadius: '15px', 
-                    background: `rgba(${event.color.includes('primary') ? '255, 61, 113' : event.color.includes('secondary') ? '61, 187, 255' : '106, 100, 255'}, 0.1)`,
+                    background: 'rgba(255, 61, 113, 0.1)',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginRight: '16px'
                   }}>
-                    <IonIcon icon={event.icon} style={{ fontSize: '24px', color: event.color }} />
+                    <IonIcon icon={fitnessOutline} style={{ fontSize: '24px', color: 'var(--ion-color-primary)' }} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <IonText><h2 style={{ fontWeight: '700', fontSize: '18px', margin: '0 0 4px 0' }}>{event.title}</h2></IonText>
+                      <IonText><h2 style={{ fontWeight: '700', fontSize: '18px', margin: '0 0 4px 0' }}>{event.tipo}</h2></IonText>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <IonIcon icon={calendarOutline} color="medium" style={{ fontSize: '14px' }} />
-                        <IonText color="medium"><span style={{ fontSize: '13px' }}>{event.date}</span></IonText>
+                        <IonText color="medium"><span style={{ fontSize: '13px' }}>{new Date(event.fecha).toLocaleDateString()}</span></IonText>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IonIcon icon={locationOutline} color="medium" style={{ fontSize: '14px' }} />
-                        <IonText color="medium"><span style={{ fontSize: '13px' }}>Madrid</span></IonText>
+                        <IonIcon icon={ribbonOutline} color="medium" style={{ fontSize: '14px' }} />
+                        <IonText color="medium"><span style={{ fontSize: '13px' }}>{event.liga_nombre}</span></IonText>
                       </div>
                     </div>
                   </div>
@@ -141,6 +146,9 @@ const CalendarPage: React.FC = () => {
               </IonCardContent>
             </IonCard>
           ))}
+          {combats.length === 0 && (
+            <IonText color="medium" style={{ textAlign: 'center', display: 'block', marginTop: '20px' }}>No hay combates programados.</IonText>
+          )}
         </IonList>
         {/* Spacer to prevent tab bar overlap */}
         <div style={{ height: '80px' }} />

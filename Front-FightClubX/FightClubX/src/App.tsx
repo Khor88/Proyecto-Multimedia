@@ -56,6 +56,7 @@ import LeaguePage from './pages/LeaguePage';
 import LeagueDetailPage from './pages/LeagueDetailPage';
 import LeagueCreatePage from './pages/LeagueCreatePage';
 import LeagueConfigPage from './pages/LeagueConfigPage';
+import RegisterPage from './pages/RegisterPage';
 
 setupIonicReact();
 
@@ -66,7 +67,10 @@ const App: React.FC = () => (
         <Route exact path="/login">
           <LoginPage />
         </Route>
-        <Route path="/tabs">
+        <Route exact path="/register">
+          <RegisterPage />
+        </Route>
+        <Route path="/tabs" render={() => (
           <IonTabs>
             <IonRouterOutlet>
               <Route exact path="/tabs/main" component={MainPage} />
@@ -89,7 +93,7 @@ const App: React.FC = () => (
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
-        </Route>
+        )} />
         <Route exact path="/settings" component={SettingsPage} />
         <Route exact path="/combat" component={CombatPage} />
         <Route exact path="/tournament" component={TournamentPage} />

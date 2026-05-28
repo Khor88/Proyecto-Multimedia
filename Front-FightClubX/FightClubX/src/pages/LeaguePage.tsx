@@ -19,14 +19,24 @@ import {
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { addOutline, chevronForwardOutline } from 'ionicons/icons';
-import { dummyLeagues } from '../data/leagueData';
+import api from '../services/api';
+import LeagueIcon from '../images/LeagueIcon.png';
 
 const LeaguePage: React.FC = () => {
   const history = useHistory();
-  const [leagues, setLeagues] = React.useState(dummyLeagues);
+  const [leagues, setLeagues] = React.useState<any[]>([]);
+
+  const fetchLeagues = async () => {
+    try {
+      const response = await api.get('/leagues/my');
+      setLeagues(response.data);
+    } catch (err) {
+      console.error('Error fetching leagues:', err);
+    }
+  };
 
   useIonViewWillEnter(() => {
-    setLeagues([...dummyLeagues]);
+    fetchLeagues();
   });
 
   const handleLeagueClick = (id: number) => {
@@ -66,15 +76,20 @@ const LeaguePage: React.FC = () => {
               }}
             >
               <IonAvatar slot="start" style={{ width: '50px', height: '50px', background: 'rgba(255,255,255,0.05)', padding: '5px' }}>
-                <IonImg src={league.image} />
+                <IonImg src={LeagueIcon} />
               </IonAvatar>
               <IonLabel>
-                <h2 style={{ fontWeight: '700', fontSize: '18px' }}>{league.name}</h2>
+                <h2 style={{ fontWeight: '700', fontSize: '18px' }}>{league.nombre}</h2>
                 <IonText color="medium"><p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>{league.division}</p></IonText>
               </IonLabel>
               <IonIcon icon={chevronForwardOutline} slot="end" color="medium" style={{ fontSize: '18px' }} />
             </IonItem>
           ))}
+          {leagues.length === 0 && (
+            <div style={{ textAlign: 'center', marginTop: '50px' }}>
+              <IonText color="medium">No perteneces a ninguna liga todavía.</IonText>
+            </div>
+          )}
         </IonList>
 
         <div style={{ height: '80px' }} />

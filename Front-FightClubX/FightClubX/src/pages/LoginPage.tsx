@@ -12,17 +12,28 @@ import {
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 
-// Import logo
 import Logo from '../images/LogoFightClubX.png';
+import api from '../services/api';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const history = useHistory();
 
-  const handleLogin = () => {
-    if (email && password) {
+  const handleLogin = async () => {
+    try {
+      setError('');
+      const response = await api.post('/auth/login', { email, password });
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
       history.push('/tabs/main');
+    } catch (err: any) {
+      console.error('Error en login:', err);
+      setError(err.response?.data?.message || 'Error al iniciar sesión');
     }
   };
 
@@ -37,6 +48,11 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div style={{ maxWidth: '320px', margin: '0 auto' }}>
+          {error && (
+            <IonText color="danger" style={{ marginBottom: '10px', display: 'block' }}>
+              <p>{error}</p>
+            </IonText>
+          )}
           <IonItem lines="full" style={{ '--background': '#000', marginBottom: '24px' }}>
             <IonInput 
               label="Email"
@@ -72,6 +88,7 @@ const LoginPage: React.FC = () => {
               fill="clear"
               color="primary"
               style={{ fontSize: '14px' }}
+              onClick={() => history.push('/register')}
             >
               Crear cuenta nueva
             </IonButton>

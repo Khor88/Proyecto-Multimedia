@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IonContent,
   IonHeader,
@@ -16,7 +16,8 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardContent
+  IonCardContent,
+  useIonViewWillEnter
 } from '@ionic/react';
 import { 
   logOutOutline, 
@@ -32,16 +33,51 @@ import {
   helpCircleOutline
 } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
+import api from '../services/api';
 
 const UserPage: React.FC = () => {
   const history = useHistory();
+  const [user, setUser] = useState<any>(null);
+
+  const fetchProfile = async () => {
+    try {
+      console.log('Fetching profile...');
+      const response = await api.get('/user/profile');
+      console.log('Profile data received:', response.data);
+      setUser(response.data);
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+      // Si hay error de auth, volver al login
+      history.push('/login');
+    }
+  };
+
+  useIonViewWillEnter(() => {
+    console.log('UserPage entered');
+    fetchProfile();
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    history.push('/login');
+  };
+
+  console.log('Rendering UserPage, user state:', user);
+  if (!user) return (
+    <IonPage>
+        <IonContent className="ion-padding">
+            <IonText>Cargando perfil...</IonText>
+        </IonContent>
+    </IonPage>
+  );
 
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
         <IonToolbar>
           <IonTitle style={{ fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Mi Perfil</IonTitle>
-          <IonButton slot="end" fill="clear" onClick={() => history.push('/login')}>
+          <IonButton slot="end" fill="clear" onClick={handleLogout}>
             <IonIcon icon={logOutOutline} color="danger" />
           </IonButton>
         </IonToolbar>
@@ -71,10 +107,10 @@ const UserPage: React.FC = () => {
           </div>
           
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '28px', fontWeight: '800', margin: '0', color: '#fff' }}>Pablo Méndez</h1>
+            <h1 style={{ fontSize: '28px', fontWeight: '800', margin: '0', color: '#fff' }}>{user.nombre}</h1>
             <IonText color="medium">
                 <p style={{ margin: '5px 0', fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 'bold' }}>
-                    Amateur Fighter
+                    {user.rol}
                 </p>
             </IonText>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
@@ -86,28 +122,25 @@ const UserPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Dashboard */}
-        <IonGrid style={{ marginBottom: '30px' }}>
+        {/* Info Grid */}
+        <IonGrid style={{ marginBottom: '20px' }}>
           <IonRow>
             <IonCol size="4">
-              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '15px', border: '1px solid var(--fcx-border-color)', textAlign: 'center' }}>
-                <IonIcon icon={trophyOutline} color="warning" style={{ fontSize: '20px' }} />
-                <h2 style={{ margin: '8px 0 2px 0', fontWeight: '900', fontSize: '20px' }}>12</h2>
-                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold' }}>Victorias</IonText>
+              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '15px', padding: '10px', textAlign: 'center', border: '1px solid var(--fcx-border-color)' }}>
+                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase' }}>Peso</IonText>
+                <h4 style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>{user.peso} kg</h4>
               </div>
             </IonCol>
             <IonCol size="4">
-              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '15px', border: '1px solid var(--fcx-border-color)', textAlign: 'center' }}>
-                <IonIcon icon={flameOutline} style={{ fontSize: '20px', color: 'var(--ion-color-secondary)' }} />
-                <h2 style={{ margin: '8px 0 2px 0', fontWeight: '900', fontSize: '20px' }}>380</h2>
-                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold' }}>Puntos</IonText>
+              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '15px', padding: '10px', textAlign: 'center', border: '1px solid var(--fcx-border-color)' }}>
+                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase' }}>Altura</IonText>
+                <h4 style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>{user.altura} m</h4>
               </div>
             </IonCol>
             <IonCol size="4">
-              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '20px', padding: '15px', border: '1px solid var(--fcx-border-color)', textAlign: 'center' }}>
-                <IonIcon icon={statsChartOutline} style={{ fontSize: '20px', color: 'var(--ion-color-tertiary)' }} />
-                <h2 style={{ margin: '8px 0 2px 0', fontWeight: '900', fontSize: '20px' }}>#2</h2>
-                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 'bold' }}>Ranking</IonText>
+              <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '15px', padding: '10px', textAlign: 'center', border: '1px solid var(--fcx-border-color)' }}>
+                <IonText color="medium" style={{ fontSize: '10px', textTransform: 'uppercase' }}>Edad</IonText>
+                <h4 style={{ margin: '5px 0 0 0', fontWeight: 'bold' }}>{user.edad}</h4>
               </div>
             </IonCol>
           </IonRow>
@@ -153,7 +186,7 @@ const UserPage: React.FC = () => {
             expand="block" 
             fill="outline" 
             color="danger" 
-            onClick={() => history.push('/login')}
+            onClick={handleLogout}
             style={{ '--border-radius': '15px', height: '55px', fontWeight: 'bold' }}
         >
             <IonIcon slot="start" icon={logOutOutline} />

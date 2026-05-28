@@ -23,6 +23,7 @@ import { useHistory } from 'react-router-dom';
 import { trophyOutline, imageOutline, saveOutline, arrowBackOutline } from 'ionicons/icons';
 import { dummyLeagues, addDummyLeague } from '../data/leagueData';
 import LeagueIcon from '../images/LeagueIcon.png';
+import api from '../services/api';
 
 const LeagueCreatePage: React.FC = () => {
   const history = useHistory();
@@ -34,26 +35,25 @@ const LeagueCreatePage: React.FC = () => {
     type: 'public'
   });
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!leagueData.name || !leagueData.division) {
       return;
     }
 
-    const newLeague = {
-      id: dummyLeagues.length + 1,
-      name: leagueData.name.toUpperCase(),
-      division: leagueData.division.charAt(0).toUpperCase() + leagueData.division.slice(1),
-      position: 'N/A',
-      points: '0',
-      image: LeagueIcon
-    };
-
-    addDummyLeague(newLeague);
-    setShowToast(true);
-    
-    setTimeout(() => {
-      history.push('/league');
-    }, 1500);
+    try {
+      await api.post('/leagues', {
+        nombre: leagueData.name,
+        division: leagueData.division,
+        descripcion: leagueData.description,
+        tipo: leagueData.type
+      });
+      setShowToast(true);
+      setTimeout(() => {
+        history.push('/league');
+      }, 1500);
+    } catch (err) {
+      console.error('Error creating league:', err);
+    }
   };
 
   return (
